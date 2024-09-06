@@ -1,0 +1,109 @@
+[project]
+name = "pyframe"
+description = "CLI tool for setting up Python projects the way I like them"
+version = "1.0.0"
+authors = [
+    {email = "pyframe@3digit.dev"}
+]
+maintainers = [
+    {email = "pyframe@3digit.dev"}
+]
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: MacOS",
+    "Operating System :: Unix",
+]
+dependencies = [
+    "toml >= 0.10.2, < 1",
+    "click >= 8.1.0, < 9",
+    "rich >= 13.8.0, < 14",
+    "bullet >= 2.2.0, < 3"
+]
+
+[project.urls]
+Homepage = "https://github.com/3digitdev/pyframe"
+Issues = "https://github.com/3digitdev/pyframe/issues"
+
+[project.scripts]
+poly = "pyframe.main:pyframe"
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit >= 3.6.0, < 4",
+    "ruff >= 0.1.14, < 1",
+    "pip-tools >= 7.3.0, < 8",
+    "twine >= 5.0.0, < 6",
+    "pytest >= 8.0.2, < 9"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/pyframe/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/.DS_STORE",
+    "/.gitignore",
+    "/.pre-commit-config.yaml",
+    "/.dev-requirements.txt"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pyframe"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "F",   # basic pyflakes, part of the default
+    "E",   # Also part of the default
+    "W",   # Checks related to Hidden characters, escape characters, and whitespace.
+    "I",   # import sorting. Will auto-sort imports with ruff check . --fix
+    "A",   # Name shadow chekcing.
+    "C4",  # Flake8 comprehensions - cleaner comprehensions.
+    "LOG", # Some logger pitfall checking.
+    "PIE", # literally misc lints from flakes.
+    "ISC", # Implicit String Concatonation checking, a common accidental bug.
+    "B",   # Bugbear checks: checks for common bug patterns.
+    "RUF", # Fixes implemented by Ruff. See https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
+    "FLY", # No old style % string-operator usage
+    "RSE", # Detect unnecessary ()'s with exceptions.
+    "T10", # Detect debugger statements
+    "PLC", # Pylint Convention See: https://docs.astral.sh/ruff/rules/#convention-c
+    "PLE", # Pylint Error-level checks.
+    "PGH", # Pylint Refactor checks
+    "EXE", # Checks Shebang conventions
+    "ARG", # Check for unused arguments.
+]
+
+ignore = [
+    "E501",    # Line too long. This is complaining about lines not handled by the formatter,
+    "ISC001",  # Recommended to ignore by ruff format
+    "RUF012",  # Annotate mutuable class vartiables with Classvar. We do not use typechecking.
+]
+
+extend-unsafe-fixes = [
+    "W291" # Remove trailing whitespaces. This is fine in 99% of usecases.
+]
+
+[tool.ruff.lint.isort]
+# this is to make isort compatible with skip-magic-trailing-comma in formatting.
+split-on-trailing-comma = false
+
+[tool.ruff.lint.per-file-ignores]
+# Disable the "Unused args" rule for tests. Including fixtures that change state but are not explicitly called
+# within a test is very common in the pytest world. The linter is not smart enough to detect this.
+"*test*.py" = ["ARG001"]
+# Ignore all import violations in `__init__.py` files to allow for explicit control of the public API.
+"__init__.py" = ["E402", "F401"]
+
+[tool.ruff.format]
+quote-style = "single"
+skip-magic-trailing-comma = true
