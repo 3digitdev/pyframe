@@ -27,7 +27,7 @@ Homepage = "https://github.com/3digitdev/pyframe"
 Issues = "https://github.com/3digitdev/pyframe/issues"
 
 [project.scripts]
-poly = "pyframe.main:pyframe"
+pyframe = "pyframe.main:pyframe"
 
 [project.optional-dependencies]
 dev = [
